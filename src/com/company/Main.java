@@ -6,10 +6,10 @@ import java.util.*;
 public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
-    private static final ArrayList <GameResult> leaderboard = new ArrayList <>();
 
 
     public static void main(String[] args) {
+        LeaderBoard.readFile();
 
         Random random = new Random();
         String userName;
@@ -44,13 +44,7 @@ public class Main {
                     long t2 = System.currentTimeMillis();
                     userLost = false;
                     System.out.println("You win!");
-                    var result = new GameResult();
-                    result.setName(userName);
-                    result.setAttempts(i + 1);
-                    result.setStartTime(t1);
-                    result.setDuration(t2 - t1);
-
-                    leaderboard.add(result);
+                    LeaderBoard.add(userName, i, t1, t2);
 
                     break;
                 }
@@ -67,20 +61,8 @@ public class Main {
 
         System.out.printf("Good bye, %s!", userName);
 
-        leaderboard.sort(
-                Comparator
-                        .comparingInt(GameResult::getAttempts)
-                        .thenComparingLong(GameResult::getDuration)
-        );
-        System.out.println("Our leaderboard:");
-        for (var res : leaderboard) {
-            System.out.printf("%1$te %1$tB %1$tY, %1$tH:%1$tM %2$s %3$d %4$.1f\n",
-                    res.getStartTime(),
-                    res.getName(),
-                    res.getAttempts(),
-                    res.getDuration() / 1000.0
-            );
-        }
+        LeaderBoard.printTable();
+        LeaderBoard.saveFile();
 
 
     }
